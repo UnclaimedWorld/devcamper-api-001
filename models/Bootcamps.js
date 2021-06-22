@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const geocoder = require('../utils/geocoder');
 
 const BootcampsSchema = new mongoose.Schema({
   name: {
@@ -37,24 +38,22 @@ const BootcampsSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please add an address']
   },
-  // location: {
-  //   type: {
-  //     type: String,
-  //     enum: ['Point'],
-  //     required: true
-  //   },
-  //   coordinates: {
-  //     type: [Number],
-  //     required: true,
-  //     index: '2dsphere'
-  //   },
-  //   formattedAddress: String,
-  //   street: String,
-  //   city: String,
-  //   state: String,
-  //   zipcode: String,
-  //   country: String,
-  // },
+  location: {
+    type: {
+      type: String,
+      enum: ['Point'],
+    },
+    coordinates: {
+      type: [Number],
+      index: '2dsphere'
+    },
+    formattedAddress: String,
+    street: String,
+    city: String,
+    state: String,
+    zipcode: String,
+    country: String,
+  },
   careers: {
     type: [String],
     required: true,
@@ -103,6 +102,26 @@ BootcampsSchema.pre('save', function(next) {
   this.slug = slugify(this.name, {
     lower: true
   });
+  next();
+});
+
+BootcampsSchema.pre('save', async function(next) {
+  const coords = await geocoder.geocode(this.address);
+  const loc = coords[0];
+
+  this.location = {
+    type: 'Point',
+    coordinates: [loc.longitude, loc.latitude],
+    formattedAddress: loc.formattedAddress,
+    street: loc.streetName,
+    city: loc.city,
+    state: loc.stateCode,
+    zipcode: loc.zipcode,
+    country: loc.countryCode
+  };
+
+  this.address = undefined;
+
   next();
 });
 

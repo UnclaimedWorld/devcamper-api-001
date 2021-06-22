@@ -42,7 +42,7 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
   });
 
   if(!data) {
-    throw new Error('cant find bootcamp with such id');
+    throw new Error('cant find bootcamp with id ' + req.params.id);
   }
 
   res.status(200).json({ success: true, data });
@@ -55,7 +55,7 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
   const data = await Bootcamps.findByIdAndDelete(req.params.id);
 
   if(!data) {
-    throw new Error('cant find bootcamp with such id');
+    throw new Error('cant find bootcamp with id ' + req.params.id);
   }
 
   res.status(200).json({ success: true, data: {} });
