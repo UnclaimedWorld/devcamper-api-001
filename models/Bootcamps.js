@@ -95,7 +95,7 @@ const BootcampsSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
-  }
+  },
 });
 
 BootcampsSchema.pre('save', function(next) {
