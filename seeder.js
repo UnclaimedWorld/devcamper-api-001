@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 dotenv.config({ path: './configs/config.env' });
 
 const Bootcamps = require('./models/Bootcamps');
+const Courses = require('./models/Courses');
 
 mongoose.connect(process.env.MONGO_DB, {
   useNewUrlParser: true,
@@ -13,21 +14,24 @@ mongoose.connect(process.env.MONGO_DB, {
 })
 
 const bootcamps = JSON.parse(fs.readFileSync(`${__dirname}/_data/bootcamps.json`, 'utf-8'));
+const courses = JSON.parse(fs.readFileSync(`${__dirname}/_data/courses.json`, 'utf-8'));
 
-async function importBootcamps() {
+async function importData() {
   try {
     await Bootcamps.create(bootcamps);
-    console.log('Bootcamps imported'.green.inverse);
+    await Courses.create(courses);
+    console.log('Data imported'.green.inverse);
     process.exit();
   } catch(e) {
     console.error(e);
   }
 }
 
-async function deleteBootcamps() {
+async function deleteData() {
   try {
     await Bootcamps.deleteMany();
-    console.log('Bootcamps destroyed'.red.inverse);
+    await Courses.deleteMany();
+    console.log('Data destroyed'.red.inverse);
     process.exit();
   } catch(e) {
     console.error(e);
@@ -35,7 +39,7 @@ async function deleteBootcamps() {
 }
 
 if(process.argv[2] === '-i') {
-  importBootcamps();
+  importData();
 } else if(process.argv[2] === '-d') {
-  deleteBootcamps();
+  deleteData();
 }

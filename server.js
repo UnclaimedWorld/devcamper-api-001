@@ -12,11 +12,13 @@ db();
 const PORT = process.env.PORT || 5000;
 const app = express();
 
-const router = require('./routes/bootcamps-routes');
+const bootcampsRouter = require('./routes/bootcamps');
+const coursesRouter = require('./routes/courses');
 
 app.use(morgan('dev'));
 app.use(express.json());
-app.use('/api/v1/bootcamps', router);
+app.use('/api/v1/bootcamps', bootcampsRouter);
+app.use('/api/v1/courses', coursesRouter);
 app.use(errorHandler);
 
 const server = app.listen(PORT, console.log(`Application is running in ${process.env.NODE_ENV} mode and on ${PORT} port`.blue.bold));
