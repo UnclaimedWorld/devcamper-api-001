@@ -99,7 +99,6 @@ const BootcampsSchema = new mongoose.Schema({
 }, {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
-
 });
 
 BootcampsSchema.pre('remove', async function(next) {

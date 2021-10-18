@@ -4,6 +4,8 @@ const morgan = require('morgan');
 const db = require('./configs/mongodb');
 const colors = require('colors');
 const errorHandler = require('./middleware/error-handler');
+const fileupload = require('express-fileupload');
+const path = require('path');
 
 dotenv.config({ path: './configs/config.env' });
 
@@ -16,7 +18,11 @@ const bootcampsRouter = require('./routes/bootcamps');
 const coursesRouter = require('./routes/courses');
 
 app.use(morgan('dev'));
+app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());
+
+app.use(fileupload());
+
 app.use('/api/v1/bootcamps', bootcampsRouter);
 app.use('/api/v1/courses', coursesRouter);
 app.use(errorHandler);
